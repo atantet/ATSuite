@@ -1,0 +1,20 @@
+import numpy
+import ODESolvers
+
+def EM(fieldDrift, paramDrift, fieldDiff, paramDiff, state, noiseSample, dt):
+    return state + dt * fieldDrift(state, paramDrift) \
+        + np.sqrt(dt) * fieldDiff(state, paramDiff, noiseSample)
+
+
+def generateEM(data_length, field, state, parameters):
+    data = numpy.zeros([state.shape[0], data_length])
+
+    for i in np.arange(data_length):
+        state = EM(fieldDrift, paramDrift, fieldDiff, paramDiff, state, noiseSample, dt)
+        data[:, i] = state
+
+    return data
+
+
+def additiveWiener_field(state=None, (S,), noiseSample):
+    return np.dot(S, noiseSample)

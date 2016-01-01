@@ -1,0 +1,37 @@
+#Compiler: Gnu or MPI?
+USE_MPI=0
+
+ifeq ($(USE_MPI), 1)
+FC=openmpif90
+FILE=sl_hadisst_mpi
+LIB_NONPARAM=nonparam_mpi
+else
+FC=gfortran
+FILE=sl_hadisst
+LIB_NONPARAM=nonparam
+endif
+
+# Compiler flags
+INC_PHD=$(HOME)/PhD/dev/include
+LIB_PHD=$(HOME)/PhD/dev/lib
+INC_LOCAL=$(HOME)/local/include
+LIB_LOCAL=$(HOME)/local/lib
+INC_OPT = /opt/local/include
+CFLAGS=-c -Wall -I$(INC_PHD) -I$(INC_LOCAL) -I$(INC_OPT)
+LDFLAGS= -lblas -lnetcdff -latmath -l$(LIB_NONPARAM) -L$(LIB_PHD) -L$(LIB_LOCAL) #-lfftw3
+
+# Installation folder
+DSTPREFIX=$(HOME)/PhD/dev
+DSTINCDIR=$(DSTPREFIX)/include/
+DSTLIBDIR=$(DSTPREFIX)/lib/
+
+all:$(FILE)
+
+$(FILE).o: $(FILE).f90
+	$(FC) $(CFLAGS) $(FILE).f90
+
+$(FILE): $(FILE).o
+	$(FC) $(LDFLAGS) $(FILE).o -o $(FILE)
+
+clean:
+	rm $(FILE).o

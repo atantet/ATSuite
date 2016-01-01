@@ -1,0 +1,33 @@
+import numpy
+
+def RK4(field, state, parameters, dt=0.01):
+    k1 = dt * field(state, parameters)
+    k2 = dt * field(state + 0.5 * k1, parameters)
+    k3 = dt * field(state + 0.5 * k2, parameters)
+    k4 = dt * field(state + k3, parameters)
+    return state + (k1 + 2 * k2 + 2 * k3 + k4) / 6
+
+
+def generateRK4(data_length, field, state, parameters):
+    data = numpy.zeros([state.shape[0], data_length])
+
+    for i in xrange(5000):
+        state = RK4(field, state, parameters)
+        
+        for i in xrange(data_length):
+            state = RK4(field, state, parameters)
+            data[:, i] = state
+
+    return data
+
+
+def lorenz_field((x, y, z), (sigma, beta, rho)):
+        return numpy.array([sigma * (y - x),
+                            x * (rho - z) - y,
+                            x * y - beta * z])
+
+
+def rossler_field((x, y, z), (a, b, c)):
+        return numpy.array([-y - z, x + a * y, b + z * (x - c)])
+
+
