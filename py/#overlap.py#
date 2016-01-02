@@ -1,4 +1,0 @@
-import numpy as np
-from scipy.optimize import minimize
-
-def markov_frobenius(M
